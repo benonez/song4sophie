@@ -1,6 +1,5 @@
 import processing.video.*;
 import themidibus.*;
-//Movie movie;
 MidiBus myBus;
 Capture cam;
 int x=854, y=480, red_on, green_on, blue_on, sw1, sw2;
@@ -17,36 +16,20 @@ void setup() {
   size(854, 480);
   frameRate(30);
   String[] cameras = Capture.list();
-  //movie = new Movie(this, "t3.mp4");
-  //movie.loop();
-  //movie.volume(0);
-  //movie.speed(moviespeed);
-  //println("Total frames:", int(movie.duration()*30.0), " # of sec:", movie.duration());
   if (cameras == null) {
     println("Failed to retrieve the list of available cameras, will try the default...");
-    cam = new Capture(this, 640, 480);
+    cam = new Capture(this, x, y);
   } else if (cameras.length == 0) {
     println("There are no cameras available for capture.");
     exit();
   } else {
     println("Available cameras:");
     printArray(cameras);
-
-    // The camera can be initialized directly using an element
-    // from the array returned by list():
     cam = new Capture(this, cameras[0]);
-    // Or, the settings can be defined based on the text in the list
-    //cam = new Capture(this, 640, 480, "Built-in iSight", 30);
-
-    // Start capturing the images from the camera
     cam.start();
     MidiBus.list(); 
     myBus=new MidiBus(this, 2, 0);
   }
-}
-
-void movieEvent(Movie m) {
-  m.read();
 }
 
 void controllerChange(int channel, int note, int velocity) {
@@ -68,8 +51,6 @@ void controllerChange(int channel, int note, int velocity) {
 }
 
 void keyPressed() {
-  //if (key==' ') movie.jump(0);
-  //if (key=='j') movie.jump(random(0, movie.duration()));
   if (key=='r') {
     speed_r=speed_g=speed_b=lfo_r=lfo_g=lfo_b=0;
     amp_r=amp_g=amp_b=20;
@@ -85,6 +66,8 @@ void keyPressed() {
 }
 
 void draw() { 
+  if (cam.available() == true) cam.read();
+  image(cam, 0, 0, width, height);
   if (sw1==1) {
     if (amp_r > 0) amp_r -= decay;
     if (amp_g > 0) amp_g -= decay;
@@ -101,12 +84,6 @@ void draw() {
     if (speed_g < speed_g_saved) speed_g += decay2;
     if (speed_b < speed_b_saved) speed_b += decay2;
   }
-  //scale(.5);
-  //image(movie, 0, 0);
-  if (cam.available() == true) {
-    cam.read();
-  }
-  image(cam, 0, 0, width, height);
   for (int j=0; j<y/2; j++) {
     for (int i=0; i<x/2; i++) {
       color c=get(i, j);
