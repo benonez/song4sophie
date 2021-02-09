@@ -40,7 +40,6 @@ void controllerChange(int channel, int note, int velocity) {
     if (note==16) speed_r=map(velocity, 0, 127, 0, var1);
     if (note==17) speed_g=map(velocity, 0, 127, 0, var1);
     if (note==18) speed_b=map(velocity, 0, 127, 0, var1);
-    if (note==23) myscale=map(velocity, 0, 127, .5, 1);
     if (note==32 && velocity==127) sw1=(sw1+1)%2;
     if (note==48 && velocity==127) sw2=(sw2+1)%2;
     if (note==64 && velocity==127) red_on=(red_on+1)%2;
