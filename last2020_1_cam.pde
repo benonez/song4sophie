@@ -99,7 +99,6 @@ void draw() {
       r2[i][j]=g2[i][j]=b2[i][j]=0;
     }
   }
-
   for (int j=0; j<y/2; j++) {
     for (int i=0; i<x/2; i++) {
       int temp1=int(abs((i+x/4)+(cos(lfo_r)*amp_r)));
@@ -119,7 +118,6 @@ void draw() {
       if (lfo_b > TWO_PI) lfo_b = -TWO_PI;
     }
   }
-
   for (int j=0; j<y; j++) {
     for (int i=0; i<x; i++) {
       set(i, j, color(r2[i][j], g2[i][j], b2[i][j]));
