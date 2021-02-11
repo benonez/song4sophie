@@ -3,7 +3,7 @@ import themidibus.*;
 MidiBus myBus;
 Capture cam;
 int x=854, y=480, red_on, green_on, blue_on, sw1, sw2;
-float var1=.00001, decay2=.0000001, amp_r=3, amp_g=3, amp_b=3, decay=.75, speed_r, speed_g, speed_b, lfo_r, lfo_g, lfo_b, amp_r_saved, amp_g_saved, amp_b_saved, speed_r_saved, speed_g_saved, speed_b_saved;
+float feed=.0, var1=.00001, decay=.75, decay2=.0000001, amp_r=3, amp_g=3, amp_b=3, speed_r, speed_g, speed_b, lfo_r, lfo_g, lfo_b, amp_r_saved, amp_g_saved, amp_b_saved, speed_r_saved, speed_g_saved, speed_b_saved;
 float[] r=new float[x*y];
 float[] g=new float[x*y];
 float[] b=new float[x*y];
@@ -37,9 +37,10 @@ void controllerChange(int channel, int note, int velocity) {
     if (note==1) amp_g=map(velocity, 0, 127, 1, 100);
     if (note==2) amp_b=map(velocity, 0, 127, 1, 100);
     if (note==7) var1=map(velocity, 0, 127, 0, .0001);
-    if (note==16) speed_r=map(velocity, 0, 127, 0, var1);
+    if (note==16) speed_r=map(velocity, 0, 127, -var1, var1);
     if (note==17) speed_g=map(velocity, 0, 127, 0, var1);
     if (note==18) speed_b=map(velocity, 0, 127, 0, var1);
+    if (note==19) feed=map(velocity, 0, 127, 0, 1);
     if (note==32 && velocity==127) sw1=(sw1+1)%2;
     if (note==48 && velocity==127) sw2=(sw2+1)%2;
     if (note==64 && velocity==127) red_on=(red_on+1)%2;
@@ -88,13 +89,14 @@ void draw() {
       r[i+j*x]=c >> 16 & 0xFF; 
       g[i+j*x]=c >> 8 & 0xFF;
       b[i+j*x]=c & 0xFF;
-      r2[i][j]=g2[i][j]=b2[i][j]=0;
+      set(i, j, -1);
     }
   }
-  background(0);
   for (int j=0; j<y; j++) {
     for (int i=0; i<x; i++) {
-      r2[i][j]=g2[i][j]=b2[i][j]=0;
+      r2[i][j]=r2[i][j]*feed;
+      g2[i][j]=g2[i][j]*feed;
+      b2[i][j]=b2[i][j]*feed;
     }
   }
   for (int j=0; j<y/2; j++) {
